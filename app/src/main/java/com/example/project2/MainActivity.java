@@ -21,7 +21,7 @@ import com.example.project2.objects.Player;
 //todo implement leaderboard database and display on main activity
 //todo get monster damage working, end game with player hp at 0
 //todo construct rewards page
-//todo construct end game page
+//todo construct end game page2
 
 public class MainActivity extends AppCompatActivity {
 
