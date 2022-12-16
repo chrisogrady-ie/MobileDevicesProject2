@@ -17,16 +17,35 @@ import com.example.project2.objects.Monster;
 import com.example.project2.objects.Player;
 import com.example.project2.objects.Word;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+
+//todo learn how to make animated
+//todo improve visually
+//todo add damage and damage resist numbers to UI
+//todo add critical hit chance and modifiers
+//todo add floating text for damage given/ taken
+//todo add a 2 second pause on doing damage to allow player to see what is happening with their HP?
+//todo add strings to string folder and use placeholders as warnings show in code
+//todo remove clicked letters from the pool of letters to use for cleaner visualisation
+//todo allow user to clicked guessed letters to remove the most recent
+
+//todo MAJOR BUG - player defeating monster and monster defeating player can happen at the same
+// time. THIS WILL CRASH THE GAME.
+// Possible solution - use 2 threads and implement locking when defeat or victory happens
 
 public class BattleActivity extends AppCompatActivity {
     /*
+        Here the player fights a monster
+        The monster attacks at a set interval for a certain amount of damage
+        The player attacks on a correct word guess
+        When a word is un jumbled a new one is fetched from the database
+        The word is treated in the word class to be jumbled
+        On the player reaching 0 hp they get the game over activity
+        When the monster hp reaches 0 the player is sent to reward activity
         A round is every new word
         A fight is an encounter per monster
      */
 
-    TextView playerHP, monsterHP, foesDefeated;
+    TextView playerHP, monsterHP, foesDefeated, playerNameText, monsterNameText;
     ImageView playerImage, monsterImage;
     Player player;
     Monster monster;
@@ -40,6 +59,8 @@ public class BattleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
         foesDefeated = findViewById(R.id.amount_defeated);
+        playerNameText = findViewById(R.id.player_name);
+        monsterNameText = findViewById(R.id.monster_name);
         playerHP = findViewById(R.id.playerHP);
         monsterHP = findViewById(R.id.monsterHP);
         playerImage = findViewById(R.id.playerImage);
@@ -47,7 +68,7 @@ public class BattleActivity extends AppCompatActivity {
         monsterImage.setImageResource(R.drawable.mindflayer);
         playerImage.setImageResource(R.drawable.hero);
 
-        //getting bundle to create/update player class
+        //getting bundle to create/update player and monster class
         Bundle bundle = getIntent().getExtras();
         String playerName = (String) bundle.get("playerName");
         int playerDamage = (int) bundle.get("playerDamage");
@@ -59,6 +80,7 @@ public class BattleActivity extends AppCompatActivity {
                 playerCurrent_hp, playerDamage_resist, playerFoes_defeated);
         playerHP.setText("HP: " + player.getCurrent_hp() + " / " + player.getMax_hp());
         foesDefeated.setText("Defeated: " + player.getFoes_defeated());
+        playerNameText.setText(player.getName());
 
         String monsterName = (String) bundle.get("monsterName");
         int monsterDamage = (int) bundle.get("monsterDamage");
@@ -66,13 +88,13 @@ public class BattleActivity extends AppCompatActivity {
         int monsterDamage_interval = (int) bundle.get("monsterDamage_interval");
         monster = new Monster(monsterName, monsterDamage, monsterMax_hp, monsterDamage_interval);
         monsterHP.setText("HP: " + monster.getCurrent_hp() + " / " + monster.getMax_hp());
+        monsterNameText.setText(monster.getName());
 
         //background thread for monster damage interval
         MonsterDamageThread runnable = new MonsterDamageThread();
         new Thread(runnable).start();
 
-        //initialises fight
-        //round_letters = shuffle_letters(round_letters);
+        //fetches a word from database and displays it jumbled
         DatabasePopulator db_handler = new DatabasePopulator(this);
         this.word = new Word(db_handler.getWord());
         EditText editText = findViewById(R.id.guess_answer);
@@ -82,6 +104,7 @@ public class BattleActivity extends AppCompatActivity {
         }
     }//instance
 
+    //player hp is at 0, goes to game over activity
     public void game_is_over(){
         Intent send = new Intent(BattleActivity.this, GameOverActivity.class);
         Bundle bundle = new Bundle();
@@ -96,8 +119,8 @@ public class BattleActivity extends AppCompatActivity {
         startActivity(send);
     }
 
+    //background thread that runs every monster_damage_interval until player or monster hp is 0
     class MonsterDamageThread extends Thread {
-        boolean running = true;
         MonsterDamageThread() {}
         @Override
         public void run() {
@@ -120,8 +143,6 @@ public class BattleActivity extends AppCompatActivity {
 
     //populating guess game fields
     public void addGuess(LinearLayout ll, EditText et, String txt){
-        //System.out.println("in add guess");
-
         LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -165,7 +186,7 @@ public class BattleActivity extends AppCompatActivity {
                 DatabasePopulator db_handler = new DatabasePopulator(this);
                 this.word = new Word(db_handler.getWord());
             }else{
-                Toast.makeText(BattleActivity.this, "VICTORY", Toast.LENGTH_LONG).show();
+                Toast.makeText(BattleActivity.this, "VICTORY", Toast.LENGTH_SHORT).show();
                 player.foe_defeated();
                 Intent send = new Intent(this, RewardsActivity.class);
                 Bundle bundle = new Bundle();
@@ -198,7 +219,7 @@ public class BattleActivity extends AppCompatActivity {
     }//damageMonster
 
     public void damagePlayer(){
-        this.player.take_damage(1);
+        this.player.take_damage(monster.getDamage());
     }//damagePlayer
 
 

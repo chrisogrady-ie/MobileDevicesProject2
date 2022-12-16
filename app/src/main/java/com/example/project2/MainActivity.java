@@ -4,20 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.project2.objects.Player;
+import java.util.HashMap;
 
-//todo make monster class
-//todo construct database and pre populate with Words, Monster and Rewards
-//todo get appropriate monster from monster database
-//todo get 3 rewards from rewards database each monster slain
-//todo implement leaderboard database and display on main activity
+//todo implement leaderboard database and display on main activity, use an online database
 //todo construct end game page
 //todo fix tables in database not clearing, many duplicating items
+//todo allow player to select avatar
+//todo allow player to enter name
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,15 +29,18 @@ public class MainActivity extends AppCompatActivity {
         splashImage = findViewById(R.id.splashImage);
         splashImage.setImageResource(R.drawable.splashart);
 
+        System.out.println();
 
+        //making an instance of database that holds rewards, words and monsters
         DatabasePopulator dbP = new DatabasePopulator(MainActivity.this);
         dbP.insertItemDetails();
         dbP.insertWordDetails();
+        dbP.insertMonsterDetails();
 
 
         //Bundle extras = getIntent().getExtras();
         btnStart.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Let's go!", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Let's go!", Toast.LENGTH_SHORT).show();
             Intent send = new Intent(this, BattleActivity.class);
 
             Bundle bundle = new Bundle();
@@ -52,12 +52,15 @@ public class MainActivity extends AppCompatActivity {
             bundle.putInt("playerDamage_resist", 0);
             bundle.putInt("playerFoes_defeated", 0);
 
+            //fetching a level 1 monster from the database
+            HashMap<String, String> mon = dbP.spawnMonster(1);
             //monster class variables to send
-            bundle.putString("monsterName", "Goblin");
-            bundle.putInt("monsterDamage", 1);
-            bundle.putInt("monsterMax_hp", 4);
-            bundle.putInt("monsterDamage_interval", 4000);
+            bundle.putString("monsterName", mon.get("name"));
+            bundle.putInt("monsterDamage", Integer.parseInt(mon.get("damage")));
+            bundle.putInt("monsterMax_hp", Integer.parseInt(mon.get("max_hp")));
+            bundle.putInt("monsterDamage_interval", Integer.parseInt(mon.get("damage_interval")));
 
+            //starts battle activity
             send.putExtras(bundle);
             startActivity(send);
         });

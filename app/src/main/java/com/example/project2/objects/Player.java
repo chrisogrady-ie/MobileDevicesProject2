@@ -32,6 +32,10 @@ public class Player {
         this.damage = damage;
     }
 
+    public void increaseDamage(int damage_increase){
+        this.damage = this.damage + damage_increase;
+    }
+
     public int getMax_hp() {
         return max_hp;
     }
@@ -40,23 +44,32 @@ public class Player {
         this.max_hp = max_hp;
     }
 
+    public void increaseMax_hp(int hp_increase){
+        this.max_hp = this.max_hp + hp_increase;
+        heal(hp_increase);
+    }
+
     public int getCurrent_hp() {return current_hp;}
 
     public void setCurrent_hp(int current_hp) {
         this.current_hp = current_hp;
     }
 
+    public void setDamage_resist(int damage_resist) {
+        this.damage_resist = damage_resist;
+    }
+
     public int getDamage_resist() {
         return damage_resist;
+    }
+
+    public void increaseDamageResist(int amount){
+        this.damage_resist = this.damage_resist + amount;
     }
 
     public void foe_defeated(){this.foes_defeated ++;}
 
     public int getFoes_defeated(){return foes_defeated;}
-
-    public void setDamage_resist(int damage_resist) {
-        this.damage_resist = damage_resist;
-    }
 
     public void heal(int amount){
         this.current_hp = current_hp + amount;
