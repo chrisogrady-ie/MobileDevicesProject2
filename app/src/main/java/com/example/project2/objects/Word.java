@@ -1,5 +1,9 @@
 package com.example.project2.objects;
 
+import com.example.project2.DatabasePopulator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Word {

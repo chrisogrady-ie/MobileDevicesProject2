@@ -11,17 +11,13 @@ import android.widget.Toast;
 
 import com.example.project2.objects.Player;
 
-//todo track monsters defeated
 //todo make monster class
-//todo make rewards class
 //todo construct database and pre populate with Words, Monster and Rewards
-//todo get random word from word database
 //todo get appropriate monster from monster database
 //todo get 3 rewards from rewards database each monster slain
 //todo implement leaderboard database and display on main activity
-//todo get monster damage working, end game with player hp at 0
-//todo construct rewards page
-//todo construct end game page2
+//todo construct end game page
+//todo fix tables in database not clearing, many duplicating items
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
         splashImage = findViewById(R.id.splashImage);
         splashImage.setImageResource(R.drawable.splashart);
 
+
+        DatabasePopulator dbP = new DatabasePopulator(MainActivity.this);
+        dbP.insertItemDetails();
+        dbP.insertWordDetails();
+
+
         //Bundle extras = getIntent().getExtras();
         btnStart.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Let's go!", Toast.LENGTH_LONG).show();
@@ -43,11 +45,18 @@ public class MainActivity extends AppCompatActivity {
 
             Bundle bundle = new Bundle();
             //player class variables to send
-            bundle.putString("name", "Hero");
-            bundle.putInt("damage", 2);
-            bundle.putInt("max_hp", 10);
-            bundle.putInt("current_hp", 10);
-            bundle.putInt("damage_resist", 0);
+            bundle.putString("playerName", "Hero");
+            bundle.putInt("playerDamage", 2);
+            bundle.putInt("playerMax_hp", 5);
+            bundle.putInt("playerCurrent_hp", 5);
+            bundle.putInt("playerDamage_resist", 0);
+            bundle.putInt("playerFoes_defeated", 0);
+
+            //monster class variables to send
+            bundle.putString("monsterName", "Goblin");
+            bundle.putInt("monsterDamage", 1);
+            bundle.putInt("monsterMax_hp", 4);
+            bundle.putInt("monsterDamage_interval", 4000);
 
             send.putExtras(bundle);
             startActivity(send);

@@ -7,13 +7,13 @@ public class Player {
     String name;
     int damage, max_hp, current_hp, damage_resist, foes_defeated;
 
-    public Player(String name, int damage, int max_hp, int current_hp, int damage_resist) {
+    public Player(String name, int damage, int max_hp, int current_hp, int damage_resist, int foes_defeated) {
         this.name = name;
         this.damage = damage;
         this.max_hp = max_hp;
         this.current_hp = current_hp;
         this.damage_resist = damage_resist;
-        this.foes_defeated = 0;
+        this.foes_defeated = foes_defeated;
     }
 
     public String getName() {
@@ -51,6 +51,8 @@ public class Player {
     }
 
     public void foe_defeated(){this.foes_defeated ++;}
+
+    public int getFoes_defeated(){return foes_defeated;}
 
     public void setDamage_resist(int damage_resist) {
         this.damage_resist = damage_resist;
