@@ -27,6 +27,7 @@ import com.example.project2.objects.Word;
 //todo add strings to string folder and use placeholders as warnings show in code
 //todo remove clicked letters from the pool of letters to use for cleaner visualisation
 //todo allow user to clicked guessed letters to remove the most recent
+//todo add music including a win and lose jingle, sound effect when hit and hitting
 
 //todo MAJOR BUG - player defeating monster and monster defeating player can happen at the same
 // time. THIS WILL CRASH THE GAME.

@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 
+//Christopher O'Grady
+//R00067022
+//christopher.ogrady@mycit.ie
+
 //todo implement leaderboard database and display on main activity, use an online database
 //todo construct end game page
 //todo fix tables in database not clearing, many duplicating items
